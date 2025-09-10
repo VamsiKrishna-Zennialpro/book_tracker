@@ -14,8 +14,8 @@ router = APIRouter(prefix="/books", tags=["Books"])
 
 @router.post("/", response_model=Book)
 async def add_book(book: Book, current_user: str = Depends(get_current_user)):
-    logger.info(f"Adding New books for {current_user}")
     book_dict = dict(book)
+    logger.warning(f"{book_dict["title"]} Book already exists.") if books_collection.find(book) else logger.info(f"Adding New books for {current_user}")
     book_dict["owner"] = current_user
     result = await books_collection.insert_one(book_dict)
     book_dict["_id"] = str(result.inserted_id)
