@@ -29,3 +29,4 @@ class BookOut(BaseModel):
     title: str
     author: str
     genre: Optional[str] = None
+    status: str

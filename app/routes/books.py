@@ -14,6 +14,7 @@ router = APIRouter(prefix="/books", tags=["Books"])
 
 @router.post("/", response_model=Book)
 async def add_book(book: Book, current_user: str = Depends(get_current_user)):
+    logger.info(f"Adding New books for {current_user}")
     book_dict = dict(book)
     book_dict["owner"] = current_user
     result = await books_collection.insert_one(book_dict)
@@ -25,6 +26,7 @@ async def add_book(book: Book, current_user: str = Depends(get_current_user)):
 
 @router.get("/", response_model=list[BookOut])
 async def get_books(current_user: str = Depends(get_current_user)):
+    logger.info(f"Fetching books for {current_user}")
     try:
         books_cursor = books_collection.find({"owner": current_user})
         books = []
@@ -34,7 +36,8 @@ async def get_books(current_user: str = Depends(get_current_user)):
                 id=str(book["_id"]),
                 title=book["title"],
                 author=book["author"],
-                genre=book.get("genre")
+                genre=book["genre"],
+                status=book["status"]
             ))
         return books
     except Exception as e:
@@ -66,17 +69,35 @@ async def get_book(book_id: str):
 
 @router.put("/{book_id}")
 async def update_book(book_id: str, book: Book, current_user: str = Depends(get_current_user)):
+    logger.info(f"User {current_user} attempting to update book {book_id}")
+
+    # Validate ObjectId
+    if not ObjectId.is_valid(book_id):
+        logger.warning(f"Invalid book_id provided: {book_id}")
+        raise HTTPException(status_code=400, detail="Invalid book ID")
+
+    # Ensure the book belongs to the current user
     existing = await books_collection.find_one({"_id": ObjectId(book_id), "owner": current_user})
     if not existing:
+        logger.warning(f"Book {book_id} not found or not owned by {current_user}")
         raise HTTPException(status_code=404, detail="Book not found or not yours")
 
+    # Perform update (only fields provided in request body)
+    update_data = book.dict(exclude_unset=True)
     await books_collection.update_one(
         {"_id": ObjectId(book_id)},
-        {"$set": book.dict()}
+        {"$set": update_data}
     )
-    book_dict = await books_collection.find_one({"_id": ObjectId(book_id)})
-    book_dict["id"] = str(book_dict["_id"])
-    return book_dict
+
+    # Fetch updated book
+    updated_book = await books_collection.find_one({"_id": ObjectId(book_id)})
+
+    # Convert ObjectId -> str and clean response
+    updated_book["id"] = str(updated_book["_id"])
+    del updated_book["_id"]
+
+    logger.info(f"Book {book_id} updated successfully for {current_user}")
+    return updated_book
 
 # Delete all books of the logged-in user
 #@router.delete("/", summary="Delete all books of the current user")

@@ -4,41 +4,35 @@ import os
 from pathlib import Path
 
 LOG_FILE = Path("logs/book_api.log").absolute()
-#LOG_FILE = C:\Github\fullstack-agentic-ai\articles\fastapi\code-samples\BOOK-TRACKER-API\app\logs\book-api.log
 
 def configure_logger():
-    """Configure the logging for the application : Console and File Logging (Rotational)"""
-
+    """Configure logging: Console + Rotating File"""
     os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
-    
-    # Configure root logger
-    logger = logging.getLogger()
+
+    logger = logging.getLogger()   # root logger
     logger.setLevel(logging.INFO)
 
-    #Configure console handler for logging  
-    console_handler =  logging.StreamHandler() # Print on Screen
-    console_handler.setLevel(logging.INFO) # Set the Level
-    console_format = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-    console_handler.setFormatter(console_format)
+    # Avoid duplicate handlers if called multiple times
+    if logger.handlers:
+        return logger
 
-    # Log Rotation Handler
+    # Console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(
+        logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    )
+
+    # File handler with rotation
     file_handler = logging.handlers.RotatingFileHandler(
-        LOG_FILE,
-        maxBytes= 104857760, # 10 MB log file
-        backupCount= 5,
-        encoding='utf-8'
+        LOG_FILE, maxBytes=10*1024*1024, backupCount=5, encoding="utf-8"
     )
-    file_handler.setLevel(logging.INFO)    
-    file_format = logging.Formatter(
-         '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(
+        logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     )
-    file_handler.setFormatter (file_format)
 
-    # Attach the File and Console handler with Logger
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
-    return logger
 
-logger = logging.getLogger(__name__)
+    return logger

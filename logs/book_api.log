@@ -1,0 +1,19 @@
+2025-09-10 09:41:17,039 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\vamsi\miniconda3\envs\book-tracker-project\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-09-10 11:10:20,656 - app.routes.users - INFO - Attempting to login user: ramesh@email.com
+2025-09-10 11:10:28,046 - app.routes.users - INFO - Login successful for ramesh@email.com
+2025-09-10 11:20:03,394 - app.routes.users - INFO - Attempting to register user: seetha@email.com
+2025-09-10 11:20:07,583 - app.routes.users - INFO - registration successful  for seetha@email.com
+2025-09-10 11:22:02,095 - app.routes.users - INFO - Attempting to login user: seetha@email.com
+2025-09-10 11:22:02,774 - app.routes.users - INFO - Login successful for seetha@email.com
+2025-09-10 11:27:05,756 - app.routes.books - INFO - Adding New books for {'_id': '68c1118ff82936f93d214ae5', 'email': 'seetha@email.com', 'password': '$2b$12$ARvt9an4ylR3NlqNV.9/V.60EiRxlcnuZ8Jwc1AaNoFZfeoI2zu.m'}
+2025-09-10 11:28:22,410 - app.routes.books - INFO - Fetching books for {'_id': '68c1118ff82936f93d214ae5', 'email': 'seetha@email.com', 'password': '$2b$12$ARvt9an4ylR3NlqNV.9/V.60EiRxlcnuZ8Jwc1AaNoFZfeoI2zu.m'}
+2025-09-10 11:30:09,496 - app.routes.books - INFO - Fetching books for {'_id': '68c1118ff82936f93d214ae5', 'email': 'seetha@email.com', 'password': '$2b$12$ARvt9an4ylR3NlqNV.9/V.60EiRxlcnuZ8Jwc1AaNoFZfeoI2zu.m'}
+2025-09-10 11:30:43,870 - app.routes.books - INFO - Fetching books for {'_id': '68c1118ff82936f93d214ae5', 'email': 'seetha@email.com', 'password': '$2b$12$ARvt9an4ylR3NlqNV.9/V.60EiRxlcnuZ8Jwc1AaNoFZfeoI2zu.m'}
+2025-09-10 11:34:01,018 - app.routes.books - INFO - Fetching books for {'_id': '68c1118ff82936f93d214ae5', 'email': 'seetha@email.com', 'password': '$2b$12$ARvt9an4ylR3NlqNV.9/V.60EiRxlcnuZ8Jwc1AaNoFZfeoI2zu.m'}
+2025-09-10 11:36:28,688 - app.routes.books - INFO - User {'_id': '68c1118ff82936f93d214ae5', 'email': 'seetha@email.com', 'password': '$2b$12$ARvt9an4ylR3NlqNV.9/V.60EiRxlcnuZ8Jwc1AaNoFZfeoI2zu.m'} attempting to update book 68c0fb69bde4e3a1b774c987
+2025-09-10 11:36:30,892 - app.routes.books - WARNING - Book 68c0fb69bde4e3a1b774c987 not found or not owned by {'_id': '68c1118ff82936f93d214ae5', 'email': 'seetha@email.com', 'password': '$2b$12$ARvt9an4ylR3NlqNV.9/V.60EiRxlcnuZ8Jwc1AaNoFZfeoI2zu.m'}
