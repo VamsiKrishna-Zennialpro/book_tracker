@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from app.routes import users,books
+from app.logging import configure_logger
+
+logger = configure_logger()
 
 app = FastAPI(title="Book Tracker API")
 

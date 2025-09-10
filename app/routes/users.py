@@ -4,6 +4,10 @@ from app.auth import hash_password, verify_password, create_access_token
 from app.db import users_collection
 from fastapi.security import OAuth2PasswordRequestForm
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.post("/register", response_model=UserOut)

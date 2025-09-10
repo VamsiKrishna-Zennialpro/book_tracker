@@ -5,6 +5,10 @@ from bson import ObjectId
 import traceback
 from app.auth import get_current_user
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
@@ -75,14 +79,30 @@ async def update_book(book_id: str, book: Book, current_user: str = Depends(get_
     return book_dict
 
 # Delete all books of the logged-in user
-@router.delete("/", summary="Delete all books of the current user")
-async def delete_all_books(current_user: str = Depends(get_current_user)):
-    result = await books_collection.delete_many({"owner": current_user})
+#@router.delete("/", summary="Delete all books of the current user")
+#async def delete_all_books(
+#    current_user: str = Depends(get_current_user),
+#    confirm: bool = Query(False, description="Set to true to confirm deletion")
+#):
+#    if not confirm:
+#        raise HTTPException(
+#            status_code=400,
+#            detail="You must confirm deletion by setting ?confirm=true"
+#        )
+#
+#    result = await books_collection.delete_many({"owner": current_user})
+#
+#    if result.deleted_count == 0:
+#        return {"message": "No books found to delete."}
+#
+#    return {"message": f"Deleted {result.deleted_count} books."}
 
-    if result.deleted_count == 0:
-        return {"message": "No books found to delete."}
-
-    return {"message": f"Deleted {result.deleted_count} books."}
+@router.get("/", response_model=list[BookOut])
+async def get_books(current_user: str = Depends(get_current_user)):
+    books = await books_collection.find({"owner": current_user}).to_list(100)
+    for book in books:
+        book["_id"] = str(book["_id"])
+    return books
 
 # Delete specific book of the logged-in user
 @router.delete("/{book_id}")
@@ -91,3 +111,5 @@ async def delete_book(book_id: str, current_user: str = Depends(get_current_user
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Book not found or not yours")
     return {"message": "Book deleted"}
+
+
